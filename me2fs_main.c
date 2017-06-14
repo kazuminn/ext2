@@ -2,6 +2,7 @@
 #include <linux/fs.h>
 
 #include "me2fs.h"
+#include "me2fs_super.h"
 #include "me2fs_util.h"
 
 
@@ -10,6 +11,9 @@
 #define ME2FS_MODULE_DESC	"my ex2 file system (me2fs)"
 #define ME2FS_MODULE_AUTHOR	"kinoshita"
 
+static struct dentry *me2fs_mount( struct file_system_type *fs_type, int flags,
+                                  const char *dev_name,
+                                  void *data );
 /*
 -----------------------------------------------------------------
 File system type
@@ -28,7 +32,7 @@ static struct dentry *me2fs_mount( struct file_system_type *fs_type,
                                   const char *dev_name,
                                   void *data )
 {
-    DBGPRINT( "<ME2FS>: i am not yet implemented.\n" );
+    me2fsMountBlockDev( fs_type, flags, dev_name, data );
     return( NULL );
 }
 
