@@ -8,3 +8,16 @@ all:
 
 clean:
 	make -C /lib/modules/3.16.44/build M=$(PWD) clean
+
+insmod:
+	sudo insmod me2fs.ko
+
+rmmod:
+	sudo rmmod me2fs.ko
+
+mount:
+	sudo mount -t me2fs -o loop ./ext2.img /mnt
+
+umount:
+	sudo umount /mnt
+
