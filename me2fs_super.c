@@ -5,6 +5,56 @@
 
 #include "me2fs.h"
 #include "me2fs_util.h"
+#include "me2fs_super.h"
+
+
+/*
+==================================================================================
+
+    Management
+
+==================================================================================
+*/
+/*
+---------------------------------------------------------------------------------
+    Super Block Operations
+---------------------------------------------------------------------------------
+*/
+static int me2fs_write_inode( struct inode* inode, struct writeback_control *wbc )
+{ DBGPRINT( "<ME2FS>write_inode\n" ); return 0; }
+static void me2fs_destroy_inode( struct inode *inode )
+{ DBGPRINT( "<ME2FS>destroy_inode\n" ); }
+//static int me2fs_drop_inode( struct inode *inode )
+//{ DBGPRINT( "<ME2FS>drop_inode\n" ); return 0; }
+static void me2fs_evict_inode( struct inode *inode )
+{ DBGPRINT( "<ME2FS>evict_inode\n" ); }
+static int me2fs_sync_fs( struct super_block *sb, int wait )
+{ DBGPRINT( "<ME2FS>sync_fs\n" ); return 0; }
+static int me2fs_freeze_fs( struct super_block *sb )
+{ DBGPRINT( "<ME2FS>freeze_fs\n" ); return 0; }
+static int me2fs_unfreeze_fs( struct super_block *sb )
+{ DBGPRINT( "<ME2FS>unfreeze_fs\n" ); return 0; }
+static int me2fs_statfs( struct dentry *dentry, struct kstatfs *buf )
+{ DBGPRINT( "<ME2FS>unfreeze_fs\n" ); return 0; }
+static int me2fs_remount_fs( struct super_block *sb, int *len, char *buf )
+{ DBGPRINT( "<ME2FS>remount_fs\n" ); return 0; }
+static int me2fs_show_options( struct seq_file *seq_file, struct dentry *dentry )
+{ DBGPRINT( "<ME2FS>show_options\n" ); return 0; }
+
+
+static struct super_operations me2fs_super_ops = {
+//  .dirty_inode  = me2fs_dirty_inode,
+    .write_inode  = me2fs_write_inode,
+//  .drop_inode   = me2fs_drop_inode,
+    .evict_inode  = me2fs_evict_inode,
+    .sync_fs      = me2fs_sync_fs,
+    .freeze_fs    = me2fs_freeze_fs,
+    .unfreeze_fs  = me2fs_unfreeze_fs,
+    .statfs       = me2fs_statfs,
+    .remount_fs   = me2fs_remount_fs,
+//  .umount_begin = me2fs_umount_begin,
+    .show_options = me2fs_show_options,
+};
 
 
 // prototype statment
@@ -122,6 +172,15 @@ static int me2fsFillSuperBlock(struct super_block *sb, void *data, int silent)
     int	block_size;
     int    ret = -EINVAL;
 
+    msi = kzalloc( sizeof( struct me2fs_sb_info ), GFP_KERNEL );
+
+    if( !msi )
+    {
+	DBGPRINT( "ME2FSerror: unable to alloc me2fs_sb_info\n" );
+	ret = -ENOMEM;
+	return ( ret );
+    }
+
     block_size = sb_min_blocksize ( sb, BLOCK_SIZE);
 
     DBGPRINT("<ME2FS>Fill Super! block_size = %d\n", block_size );
@@ -131,19 +190,38 @@ static int me2fsFillSuperBlock(struct super_block *sb, void *data, int silent)
     if( !block_size )
     {
         DBGPRINT( "<ME2FS>error: unable to set blocksize\n" );
-        return( ret );
+	goto error_read_sb;
     }
 
     if( !( bh = sb_bread( sb, 1 ) ) )
     {
         DBGPRINT( "<ME2FS>failed to bread super block\n" );
-        return( ret );
+	goto error_read_sb;
     }
 
-    esb = ( struct ext2_super_block*)(bh->b_data);
+    esb = ( struct ext2_super_block* )( bh->b_data );
 
-    dbgPrintExt2SB( esb );
+    sb->s_magic = le16_to_cpu( esb->s_magic );
 
+    if( sb->s_magic != ME2FS_SUPER_MAGIC )
+	{
+		DBGPRINT( "<ME2FS>error : magic of super block is %lu\n", sb->s_magic );
+		goto error_read_sb;
+	}
 
-    return 0;
+    msi->s_esb = esb;
+    msi->s_sbh = bh;
+
+	//dbgPrintExt2SB( esb );
+	/* ------------------------------------------------------------------------ */
+	/* set up vfs super block													*/
+	/* ------------------------------------------------------------------------ */
+    sb->s_fs_info	= ( void* )msi;
+
+    return( 0 );
+
+error_read_sb:
+    kfree( msi );
+
+    return( ret );
 }
