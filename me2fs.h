@@ -4,19 +4,10 @@
 
 #include <uapi/linux/magic.h>
 
-#define MEFS_SUPER_MAGIC	EXT2_SUPER_MAGIC    /*0xEF53
+#define ME2FS_SUPER_MAGIC	EXT2_SUPER_MAGIC    //0xEF53
 
 
-struct me2fs_sb_info
-{
-    struct ext2_super_block *s_esb;
-    struct buffer_head      *s_sbh;
-/*
----------------------------------------------------------------------------------
 
-    Ext2 Super Block
----------------------------------------------------------------------------------
-*/
 struct ext2_super_block
 {
     __le32  s_inodes_count;
@@ -84,7 +75,14 @@ struct ext2_super_block
     __le32  s_first_meta_bg;                /* first metablock block group      */
     __u32   s_reserved[ 190 ];              /* padding to the end               */
 
-}
+};
+struct me2fs_sb_info
+{
+    struct ext2_super_block *s_esb;
+    struct buffer_head      *s_sbh;
+};
+
+
 
 
 

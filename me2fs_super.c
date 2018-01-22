@@ -20,10 +20,11 @@
     Super Block Operations
 ---------------------------------------------------------------------------------
 */
+/*
 static int me2fs_write_inode( struct inode* inode, struct writeback_control *wbc )
 { DBGPRINT( "<ME2FS>write_inode\n" ); return 0; }
-static void me2fs_destroy_inode( struct inode *inode )
-{ DBGPRINT( "<ME2FS>destroy_inode\n" ); }
+//static void me2fs_destroy_inode( struct inode *inode )
+//{ DBGPRINT( "<ME2FS>destroy_inode\n" ); }
 //static int me2fs_drop_inode( struct inode *inode )
 //{ DBGPRINT( "<ME2FS>drop_inode\n" ); return 0; }
 static void me2fs_evict_inode( struct inode *inode )
@@ -40,8 +41,9 @@ static int me2fs_remount_fs( struct super_block *sb, int *len, char *buf )
 { DBGPRINT( "<ME2FS>remount_fs\n" ); return 0; }
 static int me2fs_show_options( struct seq_file *seq_file, struct dentry *dentry )
 { DBGPRINT( "<ME2FS>show_options\n" ); return 0; }
+*/
 
-
+/*
 static struct super_operations me2fs_super_ops = {
 //  .dirty_inode  = me2fs_dirty_inode,
     .write_inode  = me2fs_write_inode,
@@ -55,15 +57,17 @@ static struct super_operations me2fs_super_ops = {
 //  .umount_begin = me2fs_umount_begin,
     .show_options = me2fs_show_options,
 };
+*/
 
 
 // prototype statment
 
 static int me2fsFillSuperBlock( struct super_block *sb, void *data, int silent);
-static void dbgPrintExt2SB( struct ext2_super_block *esb );
+//static void dbgPrintExt2SB( struct ext2_super_block *esb );
 
 // function define 
 
+/*
 static void dbgPrintExt2SB( struct ext2_super_block *esb )
 {
     unsigned int value;
@@ -151,6 +155,7 @@ static void dbgPrintExt2SB( struct ext2_super_block *esb )
     value = ( unsigned int )( le32_to_cpu( esb->s_first_meta_bg ) );
     DBGPRINT( "<ME2FS>s_first_meta_bg = %u\n", value );
 }
+*/
 
 
 
@@ -169,6 +174,7 @@ static int me2fsFillSuperBlock(struct super_block *sb, void *data, int silent)
 {
     struct buffer_head	*bh;
     struct ext2_super_block *esb;
+    struct me2fs_sb_info	*msi;
     int	block_size;
     int    ret = -EINVAL;
 

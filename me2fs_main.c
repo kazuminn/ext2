@@ -6,14 +6,18 @@
 #include "me2fs_util.h"
 
 
+
+
 #define ME2FS_VERSION_SSTRING	"me2fs_0.01"
 
 #define ME2FS_MODULE_DESC	"my ex2 file system (me2fs)"
 #define ME2FS_MODULE_AUTHOR	"kinoshita"
-
-static struct dentry *me2fs_mount( struct file_system_type *fs_type, int flags,
+//prototype
+static struct dentry *me2fs_mount( struct file_system_type *fs_type,
+                                  int flags,
                                   const char *dev_name,
                                   void *data );
+
 /*
 -----------------------------------------------------------------
 File system type

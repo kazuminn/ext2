@@ -1,4 +1,4 @@
-ME2FS_SOURCE = me2fs_main.c
+ME2FS_SOURCE = me2fs_main.c me2fs_super.c
 
 obj-m += me2fs.o
 me2fs-objs := $(ME2FS_SOURCE:.c=.o)
@@ -16,7 +16,7 @@ rmmod:
 	sudo rmmod me2fs.ko
 
 mount:
-	sudo mount -t me2fs -o loop ./ext2.img /mnt
+	sudo mount -t me2fs -o loop ./me2fs.img /mnt
 
 umount:
 	sudo umount /mnt

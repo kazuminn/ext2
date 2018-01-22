@@ -1,5 +1,5 @@
-#ifndef __ME2FS_UTIL_H_
-#define __ME2FS_UTIL_H_
+#ifndef __ME2FS_UTIL_H__
+#define __ME2FS_UTIL_H__
 
 
 
